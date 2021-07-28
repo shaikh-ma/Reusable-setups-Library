@@ -57,20 +57,20 @@ def add_new_setup():
             else:
                 os.chdir(new_setup_path)
                 with open('Code.txt', 'wb') as new_setup_file:
-                    boiler_plate = '''<note>
+                    boiler_plate = '''
           -----------------: POINTS TO NOTE FOR THIS SETUP :---------------------
          1. Keep the variable name to be changed in all UPPER CASE
          2. Add the most important things regarding the setup here.
          3. Save all the required js and css file in the folder properly.
          ---------------- Update above points as per the setup requirement. -----------------
-        </note>
-<note> ----------------------- {0} - SETUP STARTS HERE ---------------------------------------------------- </note>
+        
+----------------------- {0} - SETUP STARTS HERE ---------------------------------------------------- 
 
 
 
 
 
-<note> ----------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- </note>
+ ----------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- 
 '''.format(new_setup_name)
                     new_setup_file.write(boiler_plate)
                
