@@ -59,7 +59,7 @@ def add_new_setup():
                 with open('Code.txt', 'wb') as new_setup_file:
                     boiler_plate = '''<note>
           -----------------: POINTS TO NOTE FOR THIS SETUP :---------------------
-         1. Keep the variable name to be changed iin all UPPER CASE
+         1. Keep the variable name to be changed in all UPPER CASE
          2. Add the most important things regarding the setup here.
          3. Save all the required js and css file in the folder properly.
          ---------------- Update above points as per the setup requirement. -----------------
@@ -314,6 +314,8 @@ root.mainloop()
 #search_setup_button.pack()
 
 
+
+
 '''
 
 available_setups = []
@@ -321,7 +323,7 @@ print available_setups
 
 #path_exists = False
 for the_path in setups_path:
-    found_setup_path = os.path.join(the_path, 'Bipolar Griid Setup' ,'Code.txt')
+    found_setup_path = os.path.join(the_path, 'Bipolar Grid Setup' ,'Code.txt')
     if  os.path.exists(found_setup_path):
         available_setups.append(setup_file)
         #path_exists = True
