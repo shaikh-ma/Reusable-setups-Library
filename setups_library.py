@@ -1,3 +1,5 @@
+#! bin/python2
+
 """
 A Setups Library Framework for easily using the added setups and adding the new ones.
 
