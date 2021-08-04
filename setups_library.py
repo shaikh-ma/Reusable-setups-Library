@@ -9,34 +9,41 @@ from sys import version_info
 from time import sleep
 import shelve
 
-setups_path = []
     
-
-try:
-    paths = shelve.open('.setups_paths')
-    setups_path = paths['setups_path']
-    setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
-except:
-    if not(any(setups_path)):
-        msg.showinfo("Not found","No directory found!!\n Please select a directory.")
-        sleep(1)
-        new_path = dialog.askdirectory()
-        setups_path.append(new_path)
-    paths = shelve.open('.setups_path')
-    paths['setups_path'] = setups_path
-finally:
-    paths.close()
-
-    
-
 if version_info.major == 2:
     import Tkinter as tk
     import tkMessageBox as msg
     import tkFileDialog as dialog
+    
 elif version_info.major == 3:
     import tkinter as tk
     from tkinter import messagebox as msg
     from tkinter import filedialog as dialog
+
+
+
+
+
+setups_path = []
+
+try:
+    paths = shelve.open('.setups_paths')
+    setups_path = paths['setups_paths']
+    setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
+    
+except:
+    if not(any(setups_path)):
+        msg.showinfo("Not Found!!!","No directory found!!\n Please select a directory.")
+        sleep(1)
+        new_path = dialog.askdirectory()
+        if new_path:
+            setups_path.append(new_path)
+            paths = shelve.open('.setups_paths')
+            paths['setups_paths'] = setups_path
+finally:
+    paths.close()
+
+
 
 
 '''
