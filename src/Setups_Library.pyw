@@ -255,7 +255,7 @@ def search_setup():
 root = tk.Tk()
 root.config(bg="white")
 root.minsize(width=100, height=100)
-root.minsize(width=300, height=300)
+root.maxsize(width=300, height=300)
 root.title('  Setups Library  ')
 search_setup()
 add_setup_button = tk.Button(root,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup)
