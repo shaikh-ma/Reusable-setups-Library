@@ -9,6 +9,23 @@ from sys import version_info
 from time import sleep
 import shelve
 
+setups_path = []
+    
+
+try:
+    paths = shelve.open('.setups_paths')
+    setups_path = paths['setups_path']
+    setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
+except:
+    if not(any(setups_path)):
+        msg.showinfo("Not found","No directory found!!\n Please select a directory.")
+        sleep(1)
+        new_path = dialog.askdirectory()
+        setups_path.append(new_path)
+    shelve.open('.setups_path')
+    paths['setups_path'] = setups_path
+
+    
 
 if version_info.major == 2:
     import Tkinter as tk
@@ -71,7 +88,7 @@ def add_new_setup():
                 entered_name.delete(0,tk.END)
             else:
                 os.chdir(new_setup_path)
-                with open('Code.txt', 'wb') as new_setup_file:
+                with open('Code.txt', 'w') as new_setup_file:
                     boiler_plate = '''
           -----------------: POINTS TO NOTE FOR THIS SETUP :---------------------
          1. Keep the variable name to be changed in all UPPER CASE
@@ -89,6 +106,8 @@ def add_new_setup():
 '''.format(new_setup_name)
                     new_setup_file.write(boiler_plate)
                
+                
+                sleep(2)
                 os.startfile(path_for_additional_files)
                 sleep(2)
                 msg.showinfo("Note", "Save all the js and css files\n related to the setup in this folder")
@@ -104,7 +123,8 @@ def add_new_setup():
     entered_name = tk.Entry(new_win, bd=3, textvariable=new_setup_name)
     entered_name.pack()    
     go_button = tk.Button(new_win, text="Add",command=add_path)
-    go_button.pack()    
+    go_button.pack()
+    
     new_win.mainloop()
 
 
@@ -126,8 +146,9 @@ def search_setup():
             contents = tk.StringVar()
             content = ''
             try:
-                with open(found_setup_path + r'\Code.txt', 'rU') as setup_file:
-                    content = setup_file.read().strip() 
+                with open(found_setup_path + r'\Code.txt', 'r') as setup_file:
+                    content = setup_file.read().strip()
+                    content.encode('utf-8')
             except:
                 msg.showerror("Not Found!","No Text Files found!!")
            
@@ -140,8 +161,9 @@ def search_setup():
                     msg.showerror("Not Found!","No Additional Files found!!")
   
             if  os.path.exists(additional_files_path):
-                open_additional_files()
-
+                pass
+                #sleep(3)
+                #open_additional_files()
             else:
                 msg.showerror("Not Found!","No files found!")
                 
@@ -190,21 +212,6 @@ def search_setup():
 
 
     present_setups = []
-    setups_path = []
-    
-    
-    try:
-        paths = shelve.open('.setups_paths')
-        setups_path = paths['setups_path']
-        setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
-    except:
-        if not(any(setups_path)):
-            msg.showinfo("Not found","No directory found!!\n Please select a directory.")
-            sleep(1)
-            new_path = dialog.askdirectory()
-            setups_path.append(new_path)
-        shelve.open('.setups_path')
-        paths['setups_path'] = setups_path
             
 
     for ind in range(len(setups_path)):
@@ -245,4 +252,3 @@ search_setup()
 add_setup_button = tk.Button(root,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup)
 add_setup_button.pack()
 root.mainloop()
-
