@@ -6,6 +6,9 @@ A Setups Library Framework for easily using the added setups and adding the new 
 
 import os
 from sys import version_info
+from time import sleep
+import shelve
+
 
 if version_info.major == 2:
     import Tkinter as tk
@@ -17,25 +20,10 @@ elif version_info.major == 3:
     from tkinter import filedialog as dialog
 
 
-#import pickle
-from time import sleep
 
-#global setups_path
-
-version = '0.0.3'
-
-
-
-setups_path = [r'',]
-
-##default_path = setups_path[0]
-##if default_path == None or default_path == '':
-##    default_path = dialog.askdirectory()
-
-
-
+'''
 ##  --------------------- DISABLING ADDITIONAL PATHS FOR NOW ------------------
-''''
+
 if os.path.exists('Path_list.txt'):
     pass
 else:
@@ -54,14 +42,12 @@ with open('Path_list.txt','rb') as path_lists:
                 pickle.dump(setups_path, path_lists)
     #os.startfile('Path_list.txt')
 
-##----------------------------------------------------
+##--------------------------------------------------------------------------------
 '''
+
 
 def add_new_setup():
     def add_path():
-        #go_button.pack_forget()
-        #entered_name.pack_forget()
-        #intro_label.pack_forget()
         new_setup_name = entered_name.get()
         new_win.withdraw()
         if (new_setup_name != '') and (new_setup_name not in setups_path):
@@ -98,38 +84,15 @@ def add_new_setup():
                 msg.showinfo("Note", "Save all the js and css files\n related to the setup in this folder")
                 os.startfile('Code.txt')
                 
-            #available_setups.pack_forget()
-            #search_setup()
-            
+            return 0
 
-
-##            setups_path.append(new_setup_name)
-##        
-##        with open('Path_list.txt','rb') as path_lists:
-##            contents = path_lists.read()
-##            #setups_path = [r"",]
-##            for setup_path in setups_path:
-##                if setup_path not in contents:
-##                    with open('Path_list.txt','wb') as path_lists:
-##                        pickle.dump(setups_path, path_lists)
-##            
-##            print "\nsetups_path: ",setups_path
-            #os.startfile('Path_list.txt')
-            #msg.showinfo("Important!!!", "Currently this functionality is in development")
-            return
-            #new_win.destroy()
-    
-    #new_win = tk.Tk()
-    # Get Path to setup  
     new_setup_name = tk.StringVar()
     new_setup_name.set('')
-    #print new_setup_name
     new_win = tk.Tk()
     intro_label = tk.Label(new_win, text="Enter descriptive name for the setup: ")
     intro_label.pack()
     entered_name = tk.Entry(new_win, bd=3, textvariable=new_setup_name)
-    entered_name.pack()
-    
+    entered_name.pack()    
     go_button = tk.Button(new_win, text="Add",command=add_path)
     go_button.pack()    
     new_win.mainloop()
@@ -138,7 +101,6 @@ def add_new_setup():
 
 def search_setup():
 
-    #search_setup_button.pack_forget()
     def done():
         setup_name = available_setups.selection_get()
         found_setup_path = ''
@@ -167,9 +129,7 @@ def search_setup():
                 except:
                     msg.showerror("Not Found!","No Additional Files found!!")
   
-            #print additional_files_path
             if  os.path.exists(additional_files_path):
-               #msg.showinfo("passed","Passed")
                 open_additional_files()
 
             else:
@@ -178,14 +138,10 @@ def search_setup():
             def close_code_win():
                 code_win.destroy()
                 root.deiconify()
-                #search_setup()
-                #root.mainloop()
-            #entered_name.delete(0,tk.END)
+
             if len(content) > 0:
                 code_win = tk.Tk()
                 code_win.minsize(350,350)
-                #code_win.maxsize(650,650)
-                #code_win.attributes('-fullscreen', True)
                 info_name = tk.Label(code_win, text=setup_name)
                 info_name.pack()
               
@@ -208,8 +164,7 @@ def search_setup():
                 info.pack(pady=10)
                 root.withdraw()
                 code_win.mainloop()
-                
-    
+                    
         else:
             msg.showerror("Not Found!","The entered setup does not exists!")
 
@@ -221,36 +176,40 @@ def search_setup():
     intro_label.pack(pady=10)
 
     def call_done_function(event):
-        done()
-    
+        done()  
 
 
     present_setups = []
-    setups_paths = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
+    setups_path = []
     
     
-    if not(any(setups_paths)):
-        msg.showinfo("Not found","No directory found!!\n Please select a directory.")
-        sleep(1)
-        new_path = dialog.askdirectory()
-        setups_paths.append(new_path)
+    try:
+        paths = shelve.open('.setups_paths')
+        setups_path = paths['setups_path']
+        setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
+    except:
+        if not(any(setups_path)):
+            msg.showinfo("Not found","No directory found!!\n Please select a directory.")
+            sleep(1)
+            new_path = dialog.askdirectory()
+            setups_path.append(new_path)
+        shelve.open('.setups_path')
+        paths['setups_path'] = setups_path
+            
 
-    for ind in range(len(setups_paths)):
+    for ind in range(len(setups_path)):
         try:
-            os.listdir(setups_paths[ind])
+            os.listdir(setups_path[ind])
         except WindowsError as e:
             continue
         else:
-            present_setups += os.listdir(setups_paths[ind])
+            present_setups += os.listdir(setups_path[ind])
 
     present_setups.sort()
     
     setups_list = [setup for setup in present_setups if not(setup.startswith('.'))]
     
     setups_list = '\n'.join(setups_list)
-##    for setups in present_setups:
-##        for setup in setups:
-##            setups_list += setup + '\n' 
         
     available_setups = tk.Listbox(root, ) 
     
@@ -265,18 +224,14 @@ def search_setup():
 
 
 
-
-
-##----------------- ROOT WINDOW -----------------------------------
+##----------------------------------------------------
     
 root = tk.Tk()
 root.config(bg="white")
 root.minsize(width=100, height=100)
 root.minsize(width=300, height=300)
-root.title('Setups Library - ' + version)
-
+root.title('  Setups Library  ')
 search_setup()
-add_setup_button = tk.Button(root,text="Add a new setup", padx=1, pady=5, command=add_new_setup)
+add_setup_button = tk.Button(root,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup)
 add_setup_button.pack()
 root.mainloop()
-
