@@ -10,18 +10,28 @@ from sys import version_info
 if version_info.major == 2:
     import Tkinter as tk
     import tkMessageBox as msg
+    import tkFileDialog as dialog
 elif version_info.major == 3:
     import tkinter as tk
     from tkinter import messagebox as msg
+    from tkinter import filedialog as dialog
 
 
 #import pickle
 from time import sleep
 
-global setups_path
+#global setups_path
 
 version = '0.0.3'
-setups_path = [r"",]
+
+
+
+setups_path = [r'',]
+
+##default_path = setups_path[0]
+##if default_path == None or default_path == '':
+##    default_path = dialog.askdirectory()
+
 
 
 ##  --------------------- DISABLING ADDITIONAL PATHS FOR NOW ------------------
@@ -127,40 +137,25 @@ def add_new_setup():
 
 
 def search_setup():
-    #search_setup_button.pack_forget()   
+
+    #search_setup_button.pack_forget()
     def done():
         setup_name = available_setups.selection_get()
-        #print(setup_name)
-        #setup_name = entered_name.get().strip()
-        #if 'setup' not in setup_name.lower(): setup_name = setup_name + ' Setup'
-
-        #check if setup exists
         found_setup_path = ''
-        #found_setup_folder = ''
-        #setups_path = setups_path + '\\' + setup_name 
-        #print("setups_path:", setups_path, "setups_name:", setup_name)
-                #print(found_setup_path)
         path_exists = False
         if setup_name != '':
             for the_path in setups_path:
-                #found_setup_folder = os.path.join(the_path, setup_name)
                 found_setup_path = os.path.join(the_path, setup_name)
                 if  os.path.exists(found_setup_path):
                     path_exists = True
-                #elif os.path.exists(found_setup_folder):
-                #    found_setup_path = found_setup_folder
-                #    path_exists = True
                     break
 
         if path_exists:
-            #print("found_setup_path: ",found_setup_path)
             contents = tk.StringVar()
             content = ''
             try:
                 with open(found_setup_path + r'\Code.txt', 'rU') as setup_file:
                     content = setup_file.read().strip() 
-                    #contents.set(setup_file.read().strip())
-                    #contents.replace('\n\n','\n')
             except:
                 msg.showerror("Not Found!","No Text Files found!!")
            
@@ -198,9 +193,6 @@ def search_setup():
                 code.insert(tk.INSERT,content)
                 code_win.clipboard_clear()
                 code_win.clipboard_append(content)
-                #code.tag_add('sel', '1.0', 'end')
-                #code.bind("<Control-Key-a>", select_all)
-                #code.bind("<Control-Key-A>", select_all)
                 code.pack(side=tk.TOP, pady=5, fill=tk.X )
                 def copy_text():
                     code_win.clipboard_clear()
@@ -214,8 +206,6 @@ def search_setup():
                 copy_text.pack(side=tk.LEFT, padx=4)
                 info = tk.Label(code_win, text="Code Copied! You can directly paste the code")
                 info.pack(pady=10)
-                
-                #msg.showinfo("DONE", "Code Copied! You can directly paste the code")
                 root.withdraw()
                 code_win.mainloop()
                 
@@ -224,124 +214,69 @@ def search_setup():
             msg.showerror("Not Found!","The entered setup does not exists!")
 
     
-        #go_button.pack_forget()
-        #entered_name.pack_forget()
-        #intro_label.pack_forget()
-        #available_setups.pack_forget()
-        #search_setup_button.pack()
-        
-
-
-        #new_win.destroy()
- 
-    # open new window
-    #new_win = tk.Tk()
-    
-    # Get Setup Name   
     setup_name = tk.StringVar()
     setup_name.set('')
-    #print "setup_name: ", setup_name
     intro_label = tk.Label(root, text="Select the setup from below list and Hit ENTER: ")
     intro_label.config(bg="white")
     intro_label.pack(pady=10)
-    #entered_name = tk.Entry(root, bd=3, textvariable=setup_name)
-    #entered_name.pack()
-    #go_button = tk.Button(root, text="Search", command=done)
-    #go_button.pack()
 
     def call_done_function(event):
         done()
-        #entered_name.unbind('<Return>')
+    
 
-    ##entered_name.bind('<Return>', call_done_function)
-    
+
     present_setups = []
+    setups_paths = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
     
-    for ind in range(len(setups_path)):
+    
+    if not(any(setups_paths)):
+        msg.showinfo("Not found","No directory found!!\n Please select a directory.")
+        sleep(1)
+        new_path = dialog.askdirectory()
+        setups_paths.append(new_path)
+
+    for ind in range(len(setups_paths)):
         try:
-            os.listdir(setups_path[ind])
+            os.listdir(setups_paths[ind])
         except WindowsError as e:
             continue
         else:
-            present_setups.append(os.listdir(setups_path[ind]))
+            present_setups += os.listdir(setups_paths[ind])
 
-    #present_setups = '\n'.join('\n'.join(present_setups))
     present_setups.sort()
-    setups_list = ''
-    for setups in present_setups:
-        for setup in setups:
-            setups_list += setup + '\n' 
+    
+    setups_list = [setup for setup in present_setups if not(setup.startswith('.'))]
+    
+    setups_list = '\n'.join(setups_list)
+##    for setups in present_setups:
+##        for setup in setups:
+##            setups_list += setup + '\n' 
         
-    #print "setups_list: ", setups_list
-    ##    available_setups = tk.Text(root, state=tk.NORMAL, wrap=tk.CHAR)
-    ##    available_setups.insert(tk.INSERT,setups_list)
-    ##    available_setups.pack( fill=tk.BOTH)
-
-    available_setups = tk.Listbox(root, ) #height=40, )
+    available_setups = tk.Listbox(root, ) 
     
     setups_list = setups_list.split('\n')
     for ind,setup in enumerate(setups_list):
-        #print "setup:" , setup
         available_setups.insert(ind, setup)
     available_setups.pack(fill=tk.BOTH)
     available_setups.bind('<Return>',call_done_function)
     available_setups.bind('<Double-1>',call_done_function)
-    #search_setup_button.pack()
-    #print present_setups
-     
+
+
+
+
+
+
+
+##----------------- ROOT WINDOW -----------------------------------
     
-    #setup_name = (entered_name.get())
-    #print setup_name   
-
-    #new_win.mainloop()
-
-    # Show list of all available setups found
-    
-    # Show Button to add additional files
-    # for adding files open folder to upload files
-    # Move selected files to setup folder
-    #pass
-
-
-##----------------------------------------------------
 root = tk.Tk()
 root.config(bg="white")
 root.minsize(width=100, height=100)
 root.minsize(width=300, height=300)
-#root.attributes('-fullscreen', True)
 root.title('Setups Library - ' + version)
-
 
 search_setup()
 add_setup_button = tk.Button(root,text="Add a new setup", padx=1, pady=5, command=add_new_setup)
 add_setup_button.pack()
 root.mainloop()
 
-#root.bell()
-#a = root.clipboard_get()
-#search_setup_button = tk.Button(root,text="Search Setup", padx=1, pady=5, command=search_setup)
-#search_setup_button.pack()
-
-
-
-
-'''
-
-available_setups = []
-print available_setups
-
-#path_exists = False
-for the_path in setups_path:
-    found_setup_path = os.path.join(the_path, 'Bipolar Grid Setup' ,'Code.txt')
-    if  os.path.exists(found_setup_path):
-        available_setups.append(setup_file)
-        #path_exists = True
-        #break
-
-cnt = 1
-avail = tk.Listbox(root)
-for setup in available_setups:
-    avail.insert(cnt,setup)
-    cnt += 1
-avail.pack()
-'''
