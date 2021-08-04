@@ -20,6 +20,16 @@ elif version_info.major == 3:
     from tkinter import filedialog as dialog
 
 
+'''
+#---------------- TAKS TO BE DONE -------
+
+1. Add functionality to change exisiting setup path.
+2. Add checkbox button to exclude additional files in not there.
+
+#----------------------------------------
+'''
+
+
 
 '''
 ##  --------------------- DISABLING ADDITIONAL PATHS FOR NOW ------------------
@@ -235,3 +245,4 @@ search_setup()
 add_setup_button = tk.Button(root,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup)
 add_setup_button.pack()
 root.mainloop()
+
