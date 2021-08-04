@@ -22,8 +22,10 @@ except:
         sleep(1)
         new_path = dialog.askdirectory()
         setups_path.append(new_path)
-    shelve.open('.setups_path')
+    paths = shelve.open('.setups_path')
     paths['setups_path'] = setups_path
+finally:
+    paths.close()
 
     
 
