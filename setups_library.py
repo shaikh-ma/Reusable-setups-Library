@@ -6,8 +6,16 @@ A Setups Library Framework for easily using the added setups and adding the new 
 """
 
 import os
-import Tkinter as tk
-import tkMessageBox as msg
+from sys import version_info
+
+if version_info.major == 2:
+    import Tkinter as tk
+    import tkMessageBox as msg
+elif version_info.major == 3:
+    import tkinter as tk
+    from tkinter import messagebox as msg
+
+
 #import pickle
 from time import sleep
 
@@ -123,7 +131,7 @@ def search_setup():
     #search_setup_button.pack_forget()   
     def done():
         setup_name = available_setups.selection_get()
-        print setup_name
+        #print(setup_name)
         #setup_name = entered_name.get().strip()
         #if 'setup' not in setup_name.lower(): setup_name = setup_name + ' Setup'
 
@@ -131,8 +139,8 @@ def search_setup():
         found_setup_path = ''
         #found_setup_folder = ''
         #setups_path = setups_path + '\\' + setup_name 
-        print "setups_path:", setups_path, "setups_name:", setup_name
-                #print  found_setup_path
+        #print("setups_path:", setups_path, "setups_name:", setup_name)
+                #print(found_setup_path)
         path_exists = False
         if setup_name != '':
             for the_path in setups_path:
@@ -146,7 +154,7 @@ def search_setup():
                     break
 
         if path_exists:
-            print "found_setup_path: ",found_setup_path
+            #print("found_setup_path: ",found_setup_path)
             contents = tk.StringVar()
             content = ''
             try:
@@ -253,7 +261,7 @@ def search_setup():
     for ind in range(len(setups_path)):
         try:
             os.listdir(setups_path[ind])
-        except WindowsError, e:
+        except WindowsError as e:
             continue
         else:
             present_setups.append(os.listdir(setups_path[ind]))
@@ -338,4 +346,3 @@ for setup in available_setups:
     cnt += 1
 avail.pack()
 '''
-
