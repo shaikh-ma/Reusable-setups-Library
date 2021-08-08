@@ -1,4 +1,5 @@
-# setups-library
+# Setups-Library Application
+
 Store and reuse frequently used boiler plate codes.
 
 Easily add and retrieve your frequently used snippets including additional files.
