@@ -23,6 +23,8 @@ elif version_info.major == 3:
 
 
 setups_path = []
+setup_text_file_name = 'code.txt'
+setup_additional_file_name = 'Additional Files'
 
 try:
     paths = shelve.open('.setups_paths')
@@ -88,7 +90,7 @@ def add_new_setup():
         if (new_setup_name != '') and (new_setup_name not in setups_path):
             the_setups_path = setups_path[0]
             new_setup_path = os.path.join(the_setups_path, new_setup_name)
-            path_for_additional_files = os.path.join(new_setup_path, 'Additional Files') 
+            path_for_additional_files = os.path.join(new_setup_path, setup_additional_file_name) 
             try:
                 os.makedirs(path_for_additional_files )
             except:
@@ -96,16 +98,21 @@ def add_new_setup():
                 entered_name.delete(0,tk.END)
             else:
                 os.chdir(new_setup_path)
-                with open('Code.txt', 'w') as new_setup_file:
+                with open(setup_text_file_name, 'w') as new_setup_file:
                     boiler_plate = '''
-
 ----------------------- {0} - SETUP STARTS HERE ---------------------------------------------------- 
 
 
 
 
 
- ----------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- 
+
+
+
+
+
+
+----------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- 
 
 '''.format(new_setup_name)
                     new_setup_file.write(boiler_plate)
@@ -117,7 +124,7 @@ def add_new_setup():
                 #msg.ask("Note", "Save all the js and css files\n related to the setup in this folder")
                 if msg.askokcancel("Note", "Save all the js and css files\n related to the setup in this folder"):
                     root.destroy()
-                os.startfile('Code.txt')
+                os.startfile(setup_text_file_name)
                 
             return 0
 
@@ -157,7 +164,7 @@ def search_setup():
             except:
                 msg.showerror("Not Found!","No Text Files found!!")
            
-            additional_files_path = found_setup_path.replace('Code.txt','Additional Files')
+            additional_files_path = found_setup_path.replace(setup_text_file_name,setup_additional_file_name)
 
             def open_additional_files():
                 try:
@@ -177,7 +184,7 @@ def search_setup():
                 root.deiconify()
 
             if len(content) > 0:
-                code_win = tk.Toplevel(root) #k()
+                code_win = tk.Toplevel(root)
                 code_win.minsize(350,350)
                 info_name = tk.Label(code_win, text=setup_name)
                 info_name.pack()
@@ -243,8 +250,8 @@ def search_setup():
 
     for ind,setup in enumerate(setups_list):
         curr_setup_path = os.path.join(_currdir, setup)
-        text_file = os.path.exists(os.path.join(curr_setup_path,'Code.txt'))
-        additional_file = os.path.exists(os.path.join(curr_setup_path,'Additional Files'))
+        text_file = os.path.exists(os.path.join(curr_setup_path,setup_text_file_name))
+        additional_file = os.path.exists(os.path.join(curr_setup_path,setup_additional_file_name))
         if text_file or ( additional_file and os.path.isdir(additional_file) ):
             available_setups.insert(ind, setup)
 
