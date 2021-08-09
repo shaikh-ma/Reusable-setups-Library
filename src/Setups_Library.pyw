@@ -234,11 +234,21 @@ def search_setup():
     
     setups_list = '\n'.join(setups_list)
         
-    available_setups = tk.Listbox(all_setups_list, )#root, ) 
+    available_setups = tk.Listbox(all_setups_list, )   #root, ) 
     all_setups_list.pack(fill=tk.BOTH)
     setups_list = setups_list.split('\n')
+
+    _currdir = str(os.getcwd())
+    
+
     for ind,setup in enumerate(setups_list):
-        available_setups.insert(ind, setup)
+        curr_setup_path = os.path.join(_currdir, setup)
+        text_file = os.path.exists(os.path.join(curr_setup_path,'Code.txt'))
+        additional_file = os.path.exists(os.path.join(curr_setup_path,'Additional Files'))
+        if text_file or ( additional_file and os.path.isdir(additional_file) ):
+            available_setups.insert(ind, setup)
+
+
     available_setups.pack(fill=tk.BOTH)
     available_setups.bind('<Return>',call_done_function)
     available_setups.bind('<Double-1>',call_done_function)
