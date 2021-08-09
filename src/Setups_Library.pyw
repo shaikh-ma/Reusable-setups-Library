@@ -22,26 +22,25 @@ elif version_info.major == 3:
 
 
 
-
-
 setups_path = []
 
 try:
     paths = shelve.open('.setups_paths')
     setups_path = paths['setups_paths']
     setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
-    print(setups_path)
+    #print(setups_path)
+    paths.close()
 except:
     if not(any(setups_path)):
         msg.showinfo("Not found","No directory found!!\n Please select a directory.")
         sleep(1)
         new_path = dialog.askdirectory()
-        if new_path:
+        if new_path is not None:
             setups_path.append(new_path)
             paths = shelve.open('.setups_paths')
             paths['setups_paths'] = setups_path
-finally:
-    paths.close()
+            paths.close()
+
 
 
 
@@ -119,14 +118,16 @@ def add_new_setup():
                 sleep(2)
                 os.startfile(path_for_additional_files)
                 sleep(2)
-                msg.showinfo("Note", "Save all the js and css files\n related to the setup in this folder")
+                #msg.ask("Note", "Save all the js and css files\n related to the setup in this folder")
+                if msg.askokcancel("Note", "Save all the js and css files\n related to the setup in this folder"):
+                    root.destroy()
                 os.startfile('Code.txt')
                 
             return 0
 
     new_setup_name = tk.StringVar()
     new_setup_name.set('')
-    new_win = tk.Tk()
+    new_win = tk.Toplevel(root) #tk.Tk()
     intro_label = tk.Label(new_win, text="Enter descriptive name for the setup: ")
     intro_label.pack()
     entered_name = tk.Entry(new_win, bd=3, textvariable=new_setup_name)
@@ -181,7 +182,7 @@ def search_setup():
                 root.deiconify()
 
             if len(content) > 0:
-                code_win = tk.Tk()
+                code_win = tk.Toplevel(root) #k()
                 code_win.minsize(350,350)
                 info_name = tk.Label(code_win, text=setup_name)
                 info_name.pack()
@@ -212,7 +213,8 @@ def search_setup():
     
     setup_name = tk.StringVar()
     setup_name.set('')
-    intro_label = tk.Label(root, text="Select the setup from below list and Hit ENTER: ")
+    instructions = "\n Select the setup from below list and Hit ENTER:  \n"
+    intro_label = tk.Label(root, text=instructions)
     intro_label.config(bg="white")
     intro_label.pack(pady=10)
 
@@ -237,8 +239,8 @@ def search_setup():
     
     setups_list = '\n'.join(setups_list)
         
-    available_setups = tk.Listbox(root, ) 
-    
+    available_setups = tk.Listbox(all_setups_list, )#root, ) 
+    all_setups_list.pack(fill=tk.BOTH)
     setups_list = setups_list.split('\n')
     for ind,setup in enumerate(setups_list):
         available_setups.insert(ind, setup)
@@ -257,6 +259,10 @@ root.config(bg="white")
 root.minsize(width=100, height=100)
 root.maxsize(width=300, height=300)
 root.title('  Setups Library  ')
+
+all_setups_list = tk.Frame(root, height=25, bg='light sea green')
+
+
 search_setup()
 add_setup_button = tk.Button(root,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup)
 add_setup_button.pack()
