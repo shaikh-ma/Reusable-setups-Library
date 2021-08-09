@@ -98,12 +98,7 @@ def add_new_setup():
                 os.chdir(new_setup_path)
                 with open('Code.txt', 'w') as new_setup_file:
                     boiler_plate = '''
-          -----------------: POINTS TO NOTE FOR THIS SETUP :---------------------
-         1. Keep the variable name to be changed in all UPPER CASE
-         2. Add the most important things regarding the setup here.
-         3. Save all the required js and css file in the folder properly.
-         ---------------- Update above points as per the setup requirement. -----------------
-        
+
 ----------------------- {0} - SETUP STARTS HERE ---------------------------------------------------- 
 
 
@@ -111,6 +106,7 @@ def add_new_setup():
 
 
  ----------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- 
+
 '''.format(new_setup_name)
                     new_setup_file.write(boiler_plate)
                
@@ -134,7 +130,6 @@ def add_new_setup():
     entered_name.pack()    
     go_button = tk.Button(new_win, text="Add",command=add_path)
     go_button.pack()
-    
     new_win.mainloop()
 
 
@@ -247,6 +242,9 @@ def search_setup():
     available_setups.pack(fill=tk.BOTH)
     available_setups.bind('<Return>',call_done_function)
     available_setups.bind('<Double-1>',call_done_function)
+    add_setup_button = tk.Button(all_setups_list,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup , bg='blue', fg='white')
+    add_setup_button.pack()
+
 
 
 
@@ -260,10 +258,9 @@ root.minsize(width=100, height=100)
 root.maxsize(width=300, height=300)
 root.title('  Setups Library  ')
 
-all_setups_list = tk.Frame(root, height=25, bg='light sea green')
 
-
+all_setups_list = tk.Frame(root, height=25)
 search_setup()
-add_setup_button = tk.Button(root,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup)
-add_setup_button.pack()
+
+
 root.mainloop()
