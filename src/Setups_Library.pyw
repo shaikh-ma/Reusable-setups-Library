@@ -98,12 +98,11 @@ def add_new_setup():
             the_setups_path = os.path.join(setups_path[0])# , root_setup_folder)
             new_setup_path = os.path.join(the_setups_path, new_setup_name)
             path_for_additional_files = os.path.join(new_setup_path, setup_additional_file_name)
-            print(new_setup_name)
-            print(path_for_additional_files)
+
             try:
-                os.makedirs( path_for_additional_files )
+                os.makedirs( new_setup_path )
             except:
-                msg.showerror("Error",'Setup already exists')
+                msg.showerror("Error",'Setup already exists. Try a different name.')
                 entered_name.delete(0,tk.END)
             else:
                 os.chdir(new_setup_path)
@@ -129,6 +128,7 @@ def add_new_setup():
                 
                 
                 if msg.askyesno("Additinal Files", "Does this setup has additional files?"):
+                    os.makedirs( path_for_additional_files )
                     os.startfile(path_for_additional_files)
 
                 os.startfile(setup_text_file_name)                
@@ -298,4 +298,3 @@ search_setup()
 
 
 root.mainloop()
-
