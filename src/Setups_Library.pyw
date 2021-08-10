@@ -109,7 +109,7 @@ def add_new_setup():
                 os.chdir(new_setup_path)
                 with open(setup_text_file_name, 'w') as new_setup_file:
                     boiler_plate = '''
------------------------ {0} - SETUP STARTS HERE ---------------------------------------------------- 
+---------------------------------------------------- {0} - SETUP STARTS HERE ---------------------------------------------------- 
 
 
 
@@ -121,7 +121,7 @@ def add_new_setup():
 
 
 
------------------------ {0} - SETUP ENDS  HERE ---------------------------------------------------- 
+---------------------------------------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- 
 
 '''.format(new_setup_name)
                     new_setup_file.write(boiler_plate)
@@ -298,3 +298,4 @@ search_setup()
 
 
 root.mainloop()
+
