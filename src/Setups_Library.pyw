@@ -25,6 +25,7 @@ elif version_info.major == 3:
 setups_path = []
 setup_text_file_name = 'code.txt'
 setup_additional_file_name = 'Additional Files'
+root_setup_folder = 'Setups Folder'
 
 try:
     paths = shelve.open('.setups_paths')
@@ -38,6 +39,10 @@ except:
         sleep(1)
         new_path = dialog.askdirectory()
         if new_path is not None:
+            if not(os.path.exists(root_setup_folder)):
+                os.mkdir(root_setup_folder)
+                
+            new_path = os.path.join(new_path,root_setup_folder)
             setups_path.append(new_path)
             paths = shelve.open('.setups_paths')
             paths['setups_paths'] = setups_path
@@ -88,7 +93,7 @@ def add_new_setup():
         new_setup_name = entered_name.get()
         new_win.withdraw()
         if (new_setup_name != '') and (new_setup_name not in setups_path):
-            the_setups_path = setups_path[0]
+            the_setups_path = os.path.join(setups_path[0] , root_setup_folder)
             new_setup_path = os.path.join(the_setups_path, new_setup_name)
             path_for_additional_files = os.path.join(new_setup_path, setup_additional_file_name) 
             try:
@@ -118,15 +123,19 @@ def add_new_setup():
                     new_setup_file.write(boiler_plate)
                
                 
-                sleep(2)
-                os.startfile(path_for_additional_files)
-                sleep(2)
-                #msg.ask("Note", "Save all the js and css files\n related to the setup in this folder")
-                if msg.askokcancel("Note", "Save all the js and css files\n related to the setup in this folder"):
-                    root.destroy()
-                os.startfile(setup_text_file_name)
                 
+                if msg.askyesno("Additinal Files", "Does this setup has additional files?"):
+                    os.startfile(path_for_additional_files)
+
+                os.startfile(setup_text_file_name)                
             return 0
+
+
+##    def save_function(event):
+##        add_path()
+##        
+
+
 
     new_setup_name = tk.StringVar()
     new_setup_name.set('')
@@ -136,6 +145,7 @@ def add_new_setup():
     entered_name = tk.Entry(new_win, bd=3, textvariable=new_setup_name)
     entered_name.pack()    
     go_button = tk.Button(new_win, text="Add",command=add_path)
+    #go_button.bind('<Return>',save_function)
     go_button.pack()
     new_win.mainloop()
 
@@ -153,12 +163,14 @@ def search_setup():
                 if  os.path.exists(found_setup_path):
                     path_exists = True
                     break
+        else:
+            return 0
 
         if path_exists:
             contents = tk.StringVar()
             content = ''
             try:
-                with open(found_setup_path + r'\Code.txt', 'r') as setup_file:
+                with open(os.path.join(found_setup_path , setup_text_file_name), 'r') as setup_file:
                     content = setup_file.read().strip()
                     content.encode('utf-8')
             except:
@@ -208,6 +220,7 @@ def search_setup():
                 info.pack(pady=10)
                 root.withdraw()
                 code_win.mainloop()
+                
                     
         else:
             msg.showerror("Not Found!","The entered setup does not exists!")
@@ -245,7 +258,7 @@ def search_setup():
     all_setups_list.pack(fill=tk.BOTH)
     setups_list = setups_list.split('\n')
 
-    _currdir = str(os.getcwd())
+    _currdir = os.path.join(os.getcwd(),root_setup_folder)
     
 
     for ind,setup in enumerate(setups_list):
@@ -271,7 +284,7 @@ def search_setup():
     
 root = tk.Tk()
 root.config(bg="white")
-root.minsize(width=100, height=100)
+root.minsize(width=300, height=300)
 root.maxsize(width=300, height=300)
 root.title('  Setups Library  ')
 
