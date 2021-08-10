@@ -1,6 +1,4 @@
 
-
-
 """
 A Setups Library Framework for easily using the added setups and adding the new ones.
 
@@ -33,7 +31,6 @@ theme_color = random.choice(['blue','red','green'])
 try:
     paths = shelve.open('.setups_paths')
     setups_path = paths['setups_paths']
-    print(setups_path)
     setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
     #print(setups_path)
     paths.close()
@@ -97,11 +94,14 @@ def add_new_setup():
         new_setup_name = entered_name.get()
         new_win.withdraw()
         if (new_setup_name != '') and (new_setup_name not in setups_path):
-            the_setups_path = os.path.join(setups_path[0] , root_setup_folder)
+            
+            the_setups_path = os.path.join(setups_path[0])# , root_setup_folder)
             new_setup_path = os.path.join(the_setups_path, new_setup_name)
-            path_for_additional_files = os.path.join(new_setup_path, setup_additional_file_name) 
+            path_for_additional_files = os.path.join(new_setup_path, setup_additional_file_name)
+            print(new_setup_name)
+            print(path_for_additional_files)
             try:
-                os.makedirs(path_for_additional_files )
+                os.makedirs( path_for_additional_files )
             except:
                 msg.showerror("Error",'Setup already exists')
                 entered_name.delete(0,tk.END)
@@ -298,7 +298,3 @@ search_setup()
 
 
 root.mainloop()
-
-
-
-
