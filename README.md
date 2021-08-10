@@ -17,5 +17,5 @@ To get the snippet of a particular setup either double click on the setup or sel
 <br/>
 <br/>
 The selected setup code shows up for review and is automatically copied to the clipboard, so that it can be quickly pasted into the required code/file at hand.  
-<br/>
+<br/>  
 <img src="/images/Snap1.PNG" alt="demo-op" />
