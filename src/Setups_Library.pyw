@@ -1,4 +1,6 @@
 
+
+
 """
 A Setups Library Framework for easily using the added setups and adding the new ones.
 
@@ -7,7 +9,7 @@ A Setups Library Framework for easily using the added setups and adding the new 
 import os
 from sys import version_info
 from time import sleep
-import shelve
+import shelve, random
 
     
 if version_info.major == 2:
@@ -26,10 +28,12 @@ setups_path = []
 setup_text_file_name = 'code.txt'
 setup_additional_file_name = 'Additional Files'
 root_setup_folder = 'Setups Folder'
+theme_color = random.choice(['blue','red','green'])
 
 try:
     paths = shelve.open('.setups_paths')
     setups_path = paths['setups_paths']
+    print(setups_path)
     setups_path = [str(the_path) for the_path in setups_path if the_path not in ('', None)]
     #print(setups_path)
     paths.close()
@@ -144,7 +148,7 @@ def add_new_setup():
     intro_label.pack()
     entered_name = tk.Entry(new_win, bd=3, textvariable=new_setup_name)
     entered_name.pack()    
-    go_button = tk.Button(new_win, text="Add",command=add_path)
+    go_button = tk.Button(new_win, text="Add",command=add_path, bg=theme_color, fg='white')
     #go_button.bind('<Return>',save_function)
     go_button.pack()
     new_win.mainloop()
@@ -210,11 +214,11 @@ def search_setup():
                     code_win.clipboard_clear()
                     code_win.clipboard_append(content)
 
-                additional_file = tk.Button(code_win, text="Open additional files(css and js files)", command=open_additional_files)
+                additional_file = tk.Button(code_win, text="Open additional files(css and js files)", command=open_additional_files, bg=theme_color, fg='white')
                 additional_file.pack(side=tk.LEFT, padx=4)
-                close_window = tk.Button(code_win, text="Back to Setups Library", command=close_code_win)
+                close_window = tk.Button(code_win, text="Back to Setups Library", command=close_code_win, bg=theme_color, fg='white')
                 close_window.pack(side=tk.LEFT, padx=4)
-                copy_text = tk.Button(code_win, text="Copy text", command=copy_text)
+                copy_text = tk.Button(code_win, text="Copy text", command=copy_text, bg=theme_color, fg='white')
                 copy_text.pack(side=tk.LEFT, padx=4)
                 info = tk.Label(code_win, text="Code Copied! You can directly paste the code")
                 info.pack(pady=10)
@@ -272,7 +276,7 @@ def search_setup():
     available_setups.pack(fill=tk.BOTH)
     available_setups.bind('<Return>',call_done_function)
     available_setups.bind('<Double-1>',call_done_function)
-    add_setup_button = tk.Button(all_setups_list,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup , bg='blue', fg='white')
+    add_setup_button = tk.Button(all_setups_list,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup , bg=theme_color, fg='white')
     add_setup_button.pack()
 
 
@@ -294,3 +298,7 @@ search_setup()
 
 
 root.mainloop()
+
+
+
+
