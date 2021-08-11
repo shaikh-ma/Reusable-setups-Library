@@ -1,4 +1,6 @@
 
+
+
 """
 A Setups Library Framework for easily using the added setups and adding the new ones.
 
@@ -7,7 +9,7 @@ A Setups Library Framework for easily using the added setups and adding the new 
 import os
 from sys import version_info
 from time import sleep
-import shelve, random
+import shelve, random, shutil
 
     
 if version_info.major == 2:
@@ -26,7 +28,10 @@ setups_path = []
 setup_text_file_name = 'code.txt'
 setup_additional_file_name = 'Additional Files'
 root_setup_folder = 'Setups Folder'
-theme_color = random.choice(['blue','red','green'])
+theme_color = 'blue' #random.choice(['blue','red','green'])
+_currpath = os.path.abspath(os.curdir)
+_currdir = os.path.join(_currpath,root_setup_folder)
+trash_folder = os.path.join(_currdir, '.Trash')
 
 try:
     paths = shelve.open('.setups_paths')
@@ -54,12 +59,10 @@ except:
 
 
 '''
-#---------------- TAKS TO BE DONE -------
+#---------------- TAKS TO BE DONE ---------------- 
 
-1. Add functionality to change exisiting setup path.
-2. Add checkbox button to exclude additional files in not there.
 
-#----------------------------------------
+#-------------------------------------------------
 '''
 
 
@@ -135,12 +138,6 @@ def add_new_setup():
             return 0
 
 
-##    def save_function(event):
-##        add_path()
-##        
-
-
-
     new_setup_name = tk.StringVar()
     new_setup_name.set('')
     new_win = tk.Toplevel(root) #tk.Tk()
@@ -157,11 +154,39 @@ def add_new_setup():
 
 def search_setup():
 
+    def remove_this_setup():
+        try:
+            setup_name = available_setups.selection_get()
+            current_setup = os.path.join(_currdir, setup_name)
+            #print(current_setup)
+            if not(setup_name in ('', None)):
+                removal_confirmation = msg.askyesnocancel('SETUP','Are you sure you want to remove {}?'.format(setup_name))
+                if removal_confirmation:
+                    try:
+                        assert os.path.exists(trash_folder)
+                    except:
+                        os.mkdir(trash_folder)
+                    finally:
+                        msg.showinfo('Removed','Removed the {} folder from {}'.format(setup_name, current_setup))                        
+                        shutil.move(current_setup,trash_folder)
+                        
+
+        except Exception as e:
+            print("ERROR", e)
+        
+
+
+
     def done():
-        setup_name = available_setups.selection_get()
+        try:
+            setup_name = available_setups.selection_get()
+        except:
+            setup_name = None
+        
+            
         found_setup_path = ''
         path_exists = False
-        if setup_name != '':
+        if not(setup_name in ('',None)):
             for the_path in setups_path:
                 found_setup_path = os.path.join(the_path, setup_name)
                 if  os.path.exists(found_setup_path):
@@ -262,7 +287,6 @@ def search_setup():
     all_setups_list.pack(fill=tk.BOTH)
     setups_list = setups_list.split('\n')
 
-    _currdir = os.path.join(os.getcwd(),root_setup_folder)
     
 
     for ind,setup in enumerate(setups_list):
@@ -276,8 +300,15 @@ def search_setup():
     available_setups.pack(fill=tk.BOTH)
     available_setups.bind('<Return>',call_done_function)
     available_setups.bind('<Double-1>',call_done_function)
-    add_setup_button = tk.Button(all_setups_list,text="Add a new setup and files", padx=1, pady=5, command=add_new_setup , bg=theme_color, fg='white')
-    add_setup_button.pack()
+
+    add_setup_button = tk.Button(all_setups_list,text="Add New", padx=1, pady=5, command=add_new_setup , bg=theme_color, fg='white')
+    add_setup_button.pack(side=tk.LEFT, padx=10, pady=5)
+
+    remove_setup_button = tk.Button(all_setups_list,text="Remove This", padx=1, pady=5, command=remove_this_setup , bg=theme_color, fg='white')
+    remove_setup_button.pack(side=tk.RIGHT, padx=10, pady=5)
+
+    open_setup_button = tk.Button(all_setups_list,text="  Open it!  ", padx=5, pady=5, command=done , bg=theme_color, fg='white')
+    open_setup_button.pack( padx=10, pady=5)
 
 
 
@@ -298,3 +329,5 @@ search_setup()
 
 
 root.mainloop()
+
+
