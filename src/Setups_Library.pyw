@@ -1,6 +1,7 @@
 
 
 
+
 """
 A Setups Library Framework for easily using the added setups and adding the new ones.
 
@@ -12,15 +13,14 @@ from time import sleep
 import shelve, random, shutil
 
     
-if version_info.major == 2:
-    import Tkinter as tk
-    import tkMessageBox as msg
-    import tkFileDialog as dialog
-    
-elif version_info.major == 3:
+if version_info[0] > 2:
     import tkinter as tk
     from tkinter import messagebox as msg
     from tkinter import filedialog as dialog
+else:
+    import Tkinter as tk
+    import tkMessageBox as msg
+    import tkFileDialog as dialog
 
 
 
@@ -28,7 +28,7 @@ setups_path = []
 setup_text_file_name = 'code.txt'
 setup_additional_file_name = 'Additional Files'
 root_setup_folder = 'Setups Folder'
-theme_color = 'blue' #random.choice(['blue','red','green'])
+theme_color = 'blue' 
 _currpath = os.path.abspath(os.curdir)
 _currdir = os.path.join(_currpath,root_setup_folder)
 trash_folder = os.path.join(_currdir, '.Trash')
@@ -59,15 +59,17 @@ except:
 
 
 '''
-#---------------- TAKS TO BE DONE ---------------- 
+#----------------      TO DO      -------------------------------- 
+
+1. Refresh the available setups list on adding / removing a setup.
+2. Ability to Edit the current setup.
+3. Make a setup dynaimic like Templates.
+
+#-----------------------------------------------------------------
 
 
-#-------------------------------------------------
-'''
 
 
-
-'''
 ##  --------------------- DISABLING ADDITIONAL PATHS FOR NOW ------------------
 
 if os.path.exists('Path_list.txt'):
@@ -110,21 +112,10 @@ def add_new_setup():
             else:
                 os.chdir(new_setup_path)
                 with open(setup_text_file_name, 'w') as new_setup_file:
-                    boiler_plate = '''
----------------------------------------------------- {0} - SETUP STARTS HERE ---------------------------------------------------- 
-
-
-
-
-
-
-
-
-
-
-
----------------------------------------------------- {0} - SETUP ENDS  HERE ---------------------------------------------------- 
-
+                    boiler_plate = \
+'''   ------[ {0} - SETUP STARTS HERE ]------
+\n\n\n\n\n\n\n\n
+------[ {0} - SETUP ENDS  HERE ]------
 '''.format(new_setup_name)
                     new_setup_file.write(boiler_plate)
                
@@ -158,7 +149,6 @@ def search_setup():
         try:
             setup_name = available_setups.selection_get()
             current_setup = os.path.join(_currdir, setup_name)
-            #print(current_setup)
             if not(setup_name in ('', None)):
                 removal_confirmation = msg.askyesnocancel('SETUP','Are you sure you want to remove {}?'.format(setup_name))
                 if removal_confirmation:
@@ -169,13 +159,9 @@ def search_setup():
                     finally:
                         msg.showinfo('Removed','Removed the {} folder from {}'.format(setup_name, current_setup))                        
                         shutil.move(current_setup,trash_folder)
-                        
-
         except Exception as e:
             print("ERROR", e)
         
-
-
 
     def done():
         try:
@@ -183,19 +169,32 @@ def search_setup():
         except:
             setup_name = None
         
-            
-        found_setup_path = ''
-        path_exists = False
-        if not(setup_name in ('',None)):
-            for the_path in setups_path:
-                found_setup_path = os.path.join(the_path, setup_name)
-                if  os.path.exists(found_setup_path):
-                    path_exists = True
-                    break
+        path_exists = False    
+
+        found_setup_path = os.path.join(_currdir, setup_name)#''
+
+        if found_setup_path:
+            path_exists = True
+##        
+##        if not(setup_name in ('',None)):
+##            for the_path in setups_path:
+##                found_setup_path = os.path.join(the_path, setup_name)
+##                if  os.path.exists(found_setup_path):
+##                    path_exists = True
+##                    break
         else:
             return 0
 
         if path_exists:
+            additional_files_path = os.path.join(found_setup_path,setup_additional_file_name)
+
+            def open_additional_files():
+                try:
+                    os.startfile(additional_files_path)
+                except:
+                    msg.showerror("Not Found!","No Additional Files found!!")
+
+            
             contents = tk.StringVar()
             content = ''
             try:
@@ -203,23 +202,16 @@ def search_setup():
                     content = setup_file.read().strip()
                     content.encode('utf-8')
             except:
-                msg.showerror("Not Found!","No Text Files found!!")
+                #msg.showerror("Not Found!","No Text Files found!!")
+                resp = msg.askyesnocancel("Not Found!","No Text Files found!!\n would you like to open additional files instead?")
+                if resp:open_additional_files()
+                    
            
-            additional_files_path = found_setup_path.replace(setup_text_file_name,setup_additional_file_name)
-
-            def open_additional_files():
-                try:
-                    os.startfile(additional_files_path + r'\Additional Files')
-                except:
-                    msg.showerror("Not Found!","No Additional Files found!!")
+        
   
-            if  os.path.exists(additional_files_path):
-                pass
-                #sleep(3)
-                #open_additional_files()
-            else:
-                msg.showerror("Not Found!","No files found!")
-                
+##            if  not(os.path.exists(additional_files_path)):
+##                msg.showerror("Not Found!","No files found!")
+##                
             def close_code_win():
                 code_win.destroy()
                 root.deiconify()
@@ -283,17 +275,16 @@ def search_setup():
     
     setups_list = '\n'.join(setups_list)
         
-    available_setups = tk.Listbox(all_setups_list, )   #root, ) 
+    available_setups = tk.Listbox(all_setups_list, )
     all_setups_list.pack(fill=tk.BOTH)
     setups_list = setups_list.split('\n')
 
-    
-
     for ind,setup in enumerate(setups_list):
         curr_setup_path = os.path.join(_currdir, setup)
-        text_file = os.path.exists(os.path.join(curr_setup_path,setup_text_file_name))
-        additional_file = os.path.exists(os.path.join(curr_setup_path,setup_additional_file_name))
-        if text_file or ( additional_file and os.path.isdir(additional_file) ):
+        text_file_exists = os.path.exists(os.path.join(curr_setup_path,setup_text_file_name))
+        additional_file_exists = os.path.exists(os.path.join(curr_setup_path,setup_additional_file_name))
+        
+        if text_file_exists or ( additional_file_exists and os.path.isdir(os.path.join(curr_setup_path,setup_additional_file_name)) ):
             available_setups.insert(ind, setup)
 
 
@@ -304,7 +295,7 @@ def search_setup():
     add_setup_button = tk.Button(all_setups_list,text="Add New", padx=1, pady=5, command=add_new_setup , bg=theme_color, fg='white')
     add_setup_button.pack(side=tk.LEFT, padx=10, pady=5)
 
-    remove_setup_button = tk.Button(all_setups_list,text="Remove This", padx=1, pady=5, command=remove_this_setup , bg=theme_color, fg='white')
+    remove_setup_button = tk.Button(all_setups_list,text="Remove it!", padx=1, pady=5, command=remove_this_setup , bg=theme_color, fg='white')
     remove_setup_button.pack(side=tk.RIGHT, padx=10, pady=5)
 
     open_setup_button = tk.Button(all_setups_list,text="  Open it!  ", padx=5, pady=5, command=done , bg=theme_color, fg='white')
@@ -329,5 +320,6 @@ search_setup()
 
 
 root.mainloop()
+
 
 
