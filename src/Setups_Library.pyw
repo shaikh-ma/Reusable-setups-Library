@@ -241,10 +241,10 @@ def search_setup():
                 copy_text.pack(side=tk.LEFT, padx=4)
                 info = tk.Label(code_win, text="Code Copied! You can directly paste the code")
                 info.pack(pady=10)
+                root.iconify()
                 code_win.mainloop()
-                root.withdraw()               
                 
-                    
+                
         else:
             msg.showerror("Not Found!","The entered setup does not exists!")
 
