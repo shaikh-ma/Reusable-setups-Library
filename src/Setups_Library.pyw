@@ -215,10 +215,10 @@ def search_setup():
             def close_code_win():
                 code_win.destroy()
                 root.deiconify()
-                #root.iconify()
+                
                 
 
-            if len(content) > 0:
+            if content:
                 code_win = tk.Toplevel(root)
                 code_win.minsize(350,350)
                 info_name = tk.Label(code_win, text=setup_name)
@@ -241,9 +241,8 @@ def search_setup():
                 copy_text.pack(side=tk.LEFT, padx=4)
                 info = tk.Label(code_win, text="Code Copied! You can directly paste the code")
                 info.pack(pady=10)
-                #root.withdraw()
-                root.iconify()
                 code_win.mainloop()
+                root.withdraw()               
                 
                     
         else:
