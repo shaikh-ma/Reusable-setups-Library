@@ -27,4 +27,5 @@ The selected setup code shows up for review and is automatically copied to the c
 1. Helps organize the storage and retrieval of frequently used snippets.
 2. Works Offline
 3. Add as many setups as you need.
-4. Associated additional files.
+4. Stores associated additional files.
+
