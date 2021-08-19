@@ -20,3 +20,11 @@ The selected setup code shows up for review and is automatically copied to the c
 <br/>  
 <br/>  
 <img src="/images/Snap1.PNG" alt="demo-op" />
+<br/>  
+<br/>  
+
+## Advantages
+1. Helps organize the storage and retrieval of frequently used snippets.
+2. Works Offline
+3. Add as many setups as you need.
+4. Associated additional files.
