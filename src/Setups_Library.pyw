@@ -1,13 +1,24 @@
 
 
 
-
 """
 
 @Author : Shaikh Mohammed Aamir
 @github : https://github.com/shaikh-ma/
 
+
 A Setups Library Framework for easily using the added setups and adding the new ones.
+
+
+MIT License
+
+Copyright (c) 2021-2031 Shaikh Mohammed Aamir
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
 
@@ -37,6 +48,9 @@ _currpath = os.path.abspath(os.curdir)
 _currdir = os.path.join(_currpath,root_setup_folder)
 trash_folder = os.path.join(_currdir, '.Trash')
 
+
+
+
 try:
     paths = shelve.open('.setups_paths')
     setups_path = paths['setups_paths']
@@ -57,7 +71,6 @@ except:
             paths = shelve.open('.setups_paths')
             paths['setups_paths'] = setups_path
             paths.close()
-
 
 
 
