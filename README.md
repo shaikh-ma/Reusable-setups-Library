@@ -1,4 +1,4 @@
-# Setups-Library Application
+# Reusable setups-Library Application
 
 Store and reuse frequently used boiler plate codes in a organized way.
 
